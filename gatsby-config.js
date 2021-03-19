@@ -1,81 +1,57 @@
-require(`dotenv`).config({
-  path: `.env`,
-})
-
-const shouldAnalyseBundle = process.env.ANALYSE_BUNDLE
-
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    title: `Prist | Gatsby & Prismic Starter`,
+        description: `A starter powered by Gatsby and Prismic to showcase portfolios and blogs.`,
+    author: `Marguerite Roth | marguerite.io`,
   },
   plugins: [
+    `gatsby-plugin-react-helmet`,
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
+    `gatsby-image`,
+    `gatsby-plugin-catch-links`,
+    `gatsby-plugin-sass`,
+    `gatsby-plugin-resolve-src`,
+    `gatsby-plugin-remove-trailing-slashes`,
+    `gatsby-plugin-emotion`,
     {
-      resolve: `@lekoarts/gatsby-theme-minimal-blog`,
-      // See the theme's README for all available options
+      resolve: `gatsby-source-filesystem`,
       options: {
-        navigation: [
-          {
-            title: `Blog`,
-            slug: `/blog`,
-          },
-          {
-            title: `About`,
-            slug: `/about`,
-          },
-        ],
-        externalLinks: [
-          {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
-          },
-          {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
-          },
-        ],
+        name: `images`,
+        path: `${__dirname}/src/images`,
       },
     },
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-sharp`,
     {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        trackingId: process.env.GOOGLE_ANALYTICS_ID,
-      },
+        resolve: 'gatsby-source-prismic-graphql',
+        options: {
+            repositoryName: 'prist', // (REQUIRED, replace with your own)
+            linkResolver: () => post => `/${post.uid}`,
+        }
     },
-    `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `minimal-blog - @lekoarts/gatsby-theme-minimal-blog`,
-        short_name: `minimal-blog`,
-        description: `Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and code highlighting.`,
+        name: `gatsby-prismic-starter-prist`,
+        short_name: `prist`,
         start_url: `/`,
-        background_color: `#fff`,
-        theme_color: `#6B46C1`,
-        display: `standalone`,
-        icons: [
-          {
-            src: `/android-chrome-192x192.png`,
-            sizes: `192x192`,
-            type: `image/png`,
-          },
-          {
-            src: `/android-chrome-512x512.png`,
-            sizes: `512x512`,
-            type: `image/png`,
-          },
-        ],
+        background_color: `#663399`,
+        theme_color: `#663399`,
+        display: `minimal-ui`,
+        icon: `src/images/oscar-icon.png`, // This path is relative to the root of the site.
       },
     },
-    `gatsby-plugin-offline`,
-    `gatsby-plugin-gatsby-cloud`,
-    `gatsby-plugin-netlify`,
-    shouldAnalyseBundle && {
-      resolve: `gatsby-plugin-webpack-bundle-analyser-v2`,
-      options: {
-        analyzerMode: `static`,
-        reportFilename: `_bundle.html`,
-        openAnalyzer: false,
-      },
+    // https://www.gatsbyjs.org/packages/gatsby-plugin-google-analytics/
+    {
+        resolve: `gatsby-plugin-google-analytics`,
+        options: {
+            trackingId: "YOUR_GOOGLE_ANALYTICS_TRACKING_ID",
+            head: true,
+        },
     },
-  ].filter(Boolean),
+    // this (optional) plugin enables Progressive Web App + Offline functionality
+    // To learn more, visit: https://gatsby.dev/offline
+    // `gatsby-plugin-offline`,
+  ],
 }
